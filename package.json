@@ -28,6 +28,7 @@
   },
   "dependencies": {
     "custom-env": "^2.0.1",
-    "discord.js": "^12.5.3"
+    "discord.js": "^12.5.3",
+    "express": "^4.17.1"
   }
 }

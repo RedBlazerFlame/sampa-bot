@@ -4,20 +4,28 @@ const require = createRequire(import.meta.url);
 import { command } from './classes/commands.js';
 // Importing Libraries
 const Discord = require("discord.js");
+const http = require("http");
 // Setting up Discord Bot
 const client = new Discord.Client();
 // Getting environment Variables
 require('custom-env').env();
 // Declaring Constants and Variables
+const PORT = process.env.PORT || 4000;
 const botId = "840243411562135623";
 const sampaServerId = "562626870986932234";
 /// Button-Related
 const buttonStatusChannelId = "847013609242099742";
 const buttonGeneralChannelId = "847014093583679539";
 const buttonTextStatus = ["Purple", "Blue", "Green", "Yellow", "Orange", "Red"];
-const buttonDelay = [10000, 9000, 8000, 6000, 4000, 2000];
+const buttonDelay = [6, 5, 4, 3, 3, 2].map((item) => item * 60 * 60 * 1000);
 let buttonTimeoutLoop;
 let buttonNumericalStatus = -1;
+// Setting up the web server
+const httpServer = http.createServer((_, res) => {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.write('Hi there :>');
+    res.end();
+});
 /// Function to update the button status
 function updateStatus(buttonStatusChannel) {
     // Increment button status
@@ -131,3 +139,7 @@ command(client, ["button click", "bc"], (message) => {
 });
 // Logging in
 client.login(process.env.TOKEN);
+// Listening to a certain port
+httpServer.listen(PORT, () => {
+    console.log(`http://localhost:${PORT}`);
+});

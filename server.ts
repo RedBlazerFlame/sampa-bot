@@ -7,9 +7,11 @@ import { Client, Guild, Message, GuildChannel, TextChannel, MessageEmbed, Role, 
 import { command } from './classes/commands.js';
 import { Channel } from 'discord-rpc';
 import { channel } from 'diagnostic_channel';
+import { Http2Server, Http2ServerRequest, Http2ServerResponse } from 'http2';
 
 // Importing Libraries
 const Discord = require("discord.js");
+const http = require("http");
 
 // Setting up Discord Bot
 const client: Client = new Discord.Client() as unknown as Client;
@@ -18,6 +20,7 @@ const client: Client = new Discord.Client() as unknown as Client;
 require('custom-env').env();
 
 // Declaring Constants and Variables
+const PORT = process.env.PORT || 4000;
 const botId = "840243411562135623";
 const sampaServerId = "562626870986932234";
 
@@ -25,9 +28,16 @@ const sampaServerId = "562626870986932234";
 const buttonStatusChannelId: string = "847013609242099742";
 const buttonGeneralChannelId: string = "847014093583679539";
 const buttonTextStatus: Array<string> = ["Purple", "Blue", "Green", "Yellow", "Orange", "Red"];
-const buttonDelay: Array<number> = [10000, 9000, 8000, 6000, 4000, 2000];
+const buttonDelay: Array<number> = [6, 5, 4, 3, 3, 2].map((item: number): number => item * 60 * 60 * 1000);
 let buttonTimeoutLoop: NodeJS.Timeout;
 let buttonNumericalStatus: number = -1;
+
+// Setting up the web server
+const httpServer: Http2Server = http.createServer((_: Http2ServerRequest, res: Http2ServerResponse) => {
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.write('Hi there :>');
+    res.end();
+});
 
 /// Function to update the button status
 function updateStatus(buttonStatusChannel: TextChannel): void {
@@ -160,3 +170,8 @@ command(client, ["button click", "bc"], (message: Message): void => {
 
 // Logging in
 client.login(process.env.TOKEN);
+
+// Listening to a certain port
+httpServer.listen(PORT, () => {
+    console.log(`http://localhost:${PORT}`);
+})

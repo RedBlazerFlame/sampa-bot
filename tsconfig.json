@@ -1,0 +1,18 @@
+{
+    "compileOnSave": true,
+    "compilerOptions": {
+        "watch": true,
+        "strict": true,
+        "target": "ES6",
+        "module": "ESNext",
+        "moduleResolution": "node",
+        "resolveJsonModule": true,
+        "allowSyntheticDefaultImports": true,
+        "lib": ["ESNext", "DOM"],
+        "paths": {
+            "config.json": [
+              "./config.json"
+            ]
+        }        
+    }
+}

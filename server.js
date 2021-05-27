@@ -17,7 +17,7 @@ const sampaServerId = "562626870986932234";
 const buttonStatusChannelId = "847013609242099742";
 const buttonGeneralChannelId = "847014093583679539";
 const buttonTextStatus = ["Purple", "Blue", "Green", "Yellow", "Orange", "Red"];
-const buttonDelay = [5.7, 4.8, 4.3, 3.7, 3.2, 2.6].map((item) => item /* 60 * 60 */ * 1000);
+const buttonDelay = [5.7, 4.8, 4.3, 3.7, 3.2, 2.6].map((item) => item * 60 * 60 * 1000);
 let buttonTimeoutLoop;
 let buttonNumericalStatus = -1;
 let buttonIsClickable = true;

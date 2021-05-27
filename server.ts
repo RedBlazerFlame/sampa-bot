@@ -28,7 +28,7 @@ const sampaServerId = "562626870986932234";
 const buttonStatusChannelId: string = "847013609242099742";
 const buttonGeneralChannelId: string = "847014093583679539";
 const buttonTextStatus: Array<string> = ["Purple", "Blue", "Green", "Yellow", "Orange", "Red"];
-const buttonDelay: Array<number> = [5.7, 4.8, 4.3, 3.7, 3.2, 2.6].map((item: number): number => item /* 60 * 60 */* 1000);
+const buttonDelay: Array<number> = [5.7, 4.8, 4.3, 3.7, 3.2, 2.6].map((item: number): number => item * 60 * 60 * 1000);
 let buttonTimeoutLoop: NodeJS.Timeout;
 let buttonNumericalStatus: number = -1;
 let buttonIsClickable: boolean = true;

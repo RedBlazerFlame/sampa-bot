@@ -28,7 +28,7 @@ const sampaServerId = "562626870986932234";
 const buttonStatusChannelId: string = "847013609242099742";
 const buttonGeneralChannelId: string = "847014093583679539";
 const buttonTextStatus: Array<string> = ["Purple", "Blue", "Green", "Yellow", "Orange", "Red"];
-const buttonDelay: Array<number> = [6, 5, 4, 3, 3, 2].map((item: number): number => item * 60 * 60 * 1000);
+const buttonDelay: Array<number> = [5.7, 4.8, 4.3, 3.7, 3.2, 2.6].map((item: number): number => item /* 60 * 60 */* 1000);
 let buttonTimeoutLoop: NodeJS.Timeout;
 let buttonNumericalStatus: number = -1;
 let buttonIsClickable: boolean = true;
@@ -119,6 +119,7 @@ function updateStatus(buttonStatusChannel: TextChannel): void {
         buttonNumericalStatus = -1;
     }
     else {
+        console.log(`The button is now ${buttonTextStatus[buttonNumericalStatus]}`);
         const embedMessage: MessageEmbed = new Discord.MessageEmbed()
             .setTitle("**Button Status**")
             .setDescription(`The button is now ${buttonTextStatus[buttonNumericalStatus]}`)
@@ -215,6 +216,43 @@ command(client, ["button click", "bc"], (message: Message): void => {
                 });
             });
         });
+    }
+})
+
+// Set Button status
+command(client, ["button set"], (message: Message) => {
+    const newColor = [message.content.split(" ").slice(3).join(" ").charAt(0).toUpperCase(), ...message.content.split(" ").slice(3).join(" ").slice(1)].join("");
+    
+    // The index of the new state
+    const buttonNewStateIndex: number = buttonTextStatus.findIndex((color: string): boolean => color === newColor);
+
+    if(! message.member?.roles.cache.has(message.guild?.roles.cache.find((role: Role) => (role?.name || "") === `Moderator`).id)) {
+        message.channel.send("You have to have the moderator role to run this command!");
+    }
+    else if(! buttonIsClickable)
+    {
+        message.channel.send("SampaBot is currently processing information. Please try re-running the command in a few seconds.");
+    }
+    else if(buttonNewStateIndex === -1) {
+        message.channel.send("That is an invalid color. Did you accidentally add trailing spaces?");
+    }
+    else
+    {
+        // Tell the user that the button has been updated
+        message.channel.send(`The button is now ${newColor}`);
+
+        // Make the button un-clickable
+        buttonIsClickable = false;
+
+        // Stop the button clock
+        clearTimeout(buttonTimeoutLoop);
+
+        /// Getting a reference to the button status channel
+        const buttonStatusChannel: TextChannel = client.channels.cache.get(buttonStatusChannelId) as TextChannel;
+
+        // Update Button Status
+        buttonNumericalStatus = buttonNewStateIndex - 1;
+        updateStatus(buttonStatusChannel);
     }
 })
 

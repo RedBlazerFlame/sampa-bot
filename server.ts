@@ -33,6 +33,13 @@ let buttonTimeoutLoop: NodeJS.Timeout;
 let buttonNumericalStatus: number = -1;
 let buttonIsClickable: boolean = true;
 
+// Declaring Functions
+
+/// Gets the remaining time for a setTimeout
+function getTimeLeft(timeout: NodeJS.Timeout) {
+    return Math.ceil((timeout._idleStart + timeout._idleTimeout)/1000 - process.uptime());
+}
+
 // Setting up the web server
 const httpServer: Http2Server = http.createServer((_: Http2ServerRequest, res: Http2ServerResponse) => {
     res.writeHead(200, { 'Content-Type': 'text/plain' });
@@ -253,6 +260,21 @@ command(client, ["button set"], (message: Message) => {
         // Update Button Status
         buttonNumericalStatus = buttonNewStateIndex - 1;
         updateStatus(buttonStatusChannel);
+    }
+})
+
+// Getting the state of the button timeout
+command(client, ["getTimeout"], (message) => {
+    if (! message.member?.roles.cache.has(message.guild?.roles.cache.find((role: Role) => (role?.name || "") === `Moderator`).id)) {
+        message.channel.send("You have to have the moderator role to run this command!");
+    }
+    else if(! buttonIsClickable) {
+        message.channel.send("SampaBot is still processing some information. Please wait.");
+    }
+    else
+    {
+        message.channel.send(`There are only ${getTimeLeft(buttonTimeoutLoop)}s left before the button updates its state`);
+        console.log(buttonTimeoutLoop);
     }
 })
 

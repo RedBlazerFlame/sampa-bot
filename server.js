@@ -21,6 +21,11 @@ const buttonDelay = [5.7, 4.8, 4.3, 3.7, 3.2, 2.6].map((item) => item * 60 * 60 
 let buttonTimeoutLoop;
 let buttonNumericalStatus = -1;
 let buttonIsClickable = true;
+// Declaring Functions
+/// Gets the remaining time for a setTimeout
+function getTimeLeft(timeout) {
+    return Math.ceil((timeout._idleStart + timeout._idleTimeout) / 1000 - process.uptime());
+}
 // Setting up the web server
 const httpServer = http.createServer((_, res) => {
     res.writeHead(200, { 'Content-Type': 'text/plain' });
@@ -212,6 +217,20 @@ command(client, ["button set"], (message) => {
         // Update Button Status
         buttonNumericalStatus = buttonNewStateIndex - 1;
         updateStatus(buttonStatusChannel);
+    }
+});
+// Getting the state of the button timeout
+command(client, ["getTimeout"], (message) => {
+    var _a, _b;
+    if (!((_a = message.member) === null || _a === void 0 ? void 0 : _a.roles.cache.has((_b = message.guild) === null || _b === void 0 ? void 0 : _b.roles.cache.find((role) => ((role === null || role === void 0 ? void 0 : role.name) || "") === `Moderator`).id))) {
+        message.channel.send("You have to have the moderator role to run this command!");
+    }
+    else if (!buttonIsClickable) {
+        message.channel.send("SampaBot is still processing some information. Please wait.");
+    }
+    else {
+        message.channel.send(`There are only ${getTimeLeft(buttonTimeoutLoop)}s left before the button updates its state`);
+        console.log(buttonTimeoutLoop);
     }
 });
 // Logging in
